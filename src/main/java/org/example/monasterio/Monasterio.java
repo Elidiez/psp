@@ -2,5 +2,11 @@ package org.example.monasterio;
 
 public class Monasterio {
 
-    //bucle para el hilo, están en el monasterio siempre comiendo o rezando
+    public static void main(String[] args) {
+        Mesa m = new Mesa(5);
+        for (int i = 1; i <= 5; i++) {
+            Monje monje = new Monje(m, i);
+            monje.start();
+        }
+    }
 }

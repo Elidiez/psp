@@ -4,67 +4,50 @@ import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Mesa {
 
-    private int sitio;
-    //ocupado o no ocupado array booleano
-    private boolean[] ocupado = new boolean[5];
+    private boolean[] tenedores;
 
-    public Mesa(int sitio) {
-        this.sitio = sitio;
-
+    public Mesa(int numTenedores){
+        this.tenedores = new boolean[numTenedores];
     }
 
-    //si el monje 0 está comiendo/rezando, el monje -1 y 1 no come, reza
-    //si el monje 1 está comiendo/rezando, el monje 0 y 2 no come, reza  ....
+    public int tenedorIzquierda(int i){
+        return i;
+    }
 
-    synchronized public void cogerTenedor(Monje monje) {
-        for (int i = 0; i < ocupado.length; i++) {
-            while ((ocupado[i-1] = true) && (ocupado[i+1] = true) ) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("El monje sentado en el sitio " + this.sitio + "va a empezar a comer");
-            }
+    public int tenedorDerecha(int i){
+        if(i == 0){
+            return this.tenedores.length - 1;
+        }else{
+            return i - 1;
         }
-
     }
 
-    synchronized public void comer(Monje monje) {
+    public synchronized void cogerTenedores(int comensal){
 
-        for (int i = 0; i < ocupado.length; i++) {
-            ocupado[i] = true;
+        while(tenedores[tenedorIzquierda(comensal)] || tenedores[tenedorDerecha(comensal)]){
             try {
-                sleep(500);
-                System.out.println("El monje sentado en el sitio " + this.sitio + " está comiendo");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    synchronized public void dejarTenedor(Monje monje) {
-        for (int i = 0; i < ocupado.length; i++) {
-            ocupado[i] = false;
-            notifyAll();
-            System.out.println("El monje sentado en el sitio " + this.sitio + " ha dejado de comer");
-        }
-    }
-
-    synchronized public void rezar(Monje monje) {
-        for (int i = 0; i < ocupado.length; i++) {
-            try {
-                ocupado[i] = true;
                 wait();
-                sleep(500);
-                System.out.println("El monje sentado en el sitio " + this.sitio + " está rezando");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Mesa.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
+        tenedores[tenedorIzquierda(comensal)] = true;
+        tenedores[tenedorDerecha(comensal)] = true;
+    }
+
+    public synchronized void dejarTenedores(int comensal){
+        tenedores[tenedorIzquierda(comensal)] = false;
+        tenedores[tenedorDerecha(comensal)] = false;
+        notifyAll();
     }
 
 }
+
+
+

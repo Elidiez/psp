@@ -1,3 +1,4 @@
+package org.example.productorconsumidornotify;
 
 public class Cola {
 	int numero;

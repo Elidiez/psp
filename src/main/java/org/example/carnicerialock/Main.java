@@ -1,5 +1,8 @@
 package org.example;
 
+import org.example.carnicerialock.Carniceria;
+import org.example.carnicerialock.Cliente;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
